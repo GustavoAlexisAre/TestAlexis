@@ -46,12 +46,44 @@
               :search="search"
               item-value="name"
             >
+            
               <template v-slot:top>
                 <v-text-field
                   v-model="search"
                   class="pa-2"
                   label="Search"
                 ></v-text-field>
+              </template>
+              <template v-slot:item.actions="{ item }">
+                <div class="text-center pa-4">
+    <v-btn v-if="tab === 'Consulta' " @click="openModal(item)">
+      Open Dialog
+    </v-btn>
+
+    <v-dialog
+      v-model="dialog"
+      width="auto"
+    >
+    <v-card max-width="400" prepend-icon="mdi-update">
+        <v-card-title>{{ selectedItem.name }}</v-card-title>
+        <v-card-text>
+          <div>Cores: {{ selectedItem.cores }}</div>
+          <div>Threads: {{ selectedItem.threads }}</div>
+          <div>Base Clock: {{ selectedItem.baseClock }}</div>
+          <div>Boost Clock: {{ selectedItem.boostClock }}</div>
+          <div>Tdp: {{ selectedItem.tdp }}</div>
+        </v-card-text>
+        <template v-slot:actions>
+          <v-btn
+            class="ms-auto"
+            text="Ok"
+            @click="closeModal(item)"
+          ></v-btn>
+          
+        </template>
+      </v-card>
+    </v-dialog>
+  </div>
               </template>
             </v-data-table>
 
@@ -104,6 +136,7 @@
           align: 'end',
           key: 'tdp',
         },
+        { text: 'Acciones', value: 'actions', sortable: false },
       ],
       items: [
         {
@@ -185,10 +218,23 @@
           tdp: '35W',
         },
       ],
+      dialog: false,
+      selectedItem: null,
 
 
       }
     },
+    methods:{
+      openModal(item) {
+      console.log('Mostrar modal para:', item);
+      this.selectedItem = item;
+        this.dialog = true
+    },
+    closeModal(item){
+      this.dialog = false
+    }
+    }
+
   }
 
 </script>
